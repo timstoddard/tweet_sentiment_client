@@ -1,0 +1,26 @@
+<div class="candidate">
+  <div class="candidate__info">
+    <h2 class="candidate__name">
+      {{ candidate.name }}
+    </h2>
+    <div class="candidate__age">
+      Age: {{ getAge(candidate.birthday) }} years old
+    </div>
+    <img
+      [src]="candidate.imgSrc"
+      [alt]="candidate.name"
+      class="candidate__img">
+  </div>
+  
+  <div class="candidate__chart">
+    <canvas mdbChart
+      chartType="line"
+      [datasets]="getDataset(candidate)"
+      [labels]="chartLabels"
+      [colors]="chartColors"
+      [options]="{ responsive: true }"
+      (chartHover)="chartHovered($event)"
+      (chartClick)="chartClicked($event)">
+    </canvas>
+  </div>
+</div>

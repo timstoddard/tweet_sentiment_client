@@ -1,0 +1,22 @@
+<header class="header">
+  <ul class="header__links">
+    <li
+      *ngFor="let candidate of candidates"
+      class="header__linkWrapper">
+      <a
+        [routerLink]="candidate.id"
+        routerLinkActive="header__link--active"
+        class="header__link">
+        {{ candidate.name }}
+      </a>
+    </li>
+    <li class="header__linkWrapper">
+      <a
+        routerLink="compare"
+        routerLinkActive="header__link--active"
+        class="header__link">
+        Compare
+      </a>
+    </li>
+  </ul>
+</header>
