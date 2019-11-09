@@ -1,16 +1,17 @@
 $headerBorderRadius: 6px;
 
 .header {
-  margin-bottom: 20px;
+  display: flex;
 
   &__links {
     align-items: center;
     display: flex;
     flex-direction: row;
-    justify-content: center;
+    justify-content: space-around;
     list-style-type: none;
     margin: 0;
     padding: 0;
+    width: 100%;
   }
 
   &__linkWrapper {
@@ -18,28 +19,20 @@ $headerBorderRadius: 6px;
     background: rgb(240,240,240);
     cursor: pointer;
     display: flex;
+    flex: 1 1 auto;
     justify-content: center;
     transition: all 0.25s ease;
 
     &:hover {
       background: rgb(220,220,220);
     }
-
-    &:first-of-type,
-    &:first-of-type > .header__link {
-      border-bottom-left-radius: $headerBorderRadius;
-    }
-
-    &:last-of-type,
-    &:last-of-type > .header__link {
-      border-bottom-right-radius: $headerBorderRadius;
-    }
   }
 
   &__link {
     color: black;
-    padding: 10px 10px;
-    white-space: nowrap;
+    padding: 10px;
+    text-align: center;
+    width: 100%;
 
     &--active {
       background: rgba(rgb(0, 204, 255), 0.8);

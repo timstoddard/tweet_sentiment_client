@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { of, Observable } from 'rxjs'; // TODO remove
+import candidates from './candidates';
 
 export interface CandidateResponse {
   id: string;
@@ -19,7 +20,8 @@ export class CandidateService {
   }
 
   getCandidates(): Observable<CandidateResponse[]> {
+    // TODO add /all endpoint to api
     // return this.http.get<CandidateResponse[]>(`${baseUrl}/all`);
-    return of([]);
+    return of(candidates);
   }
 }

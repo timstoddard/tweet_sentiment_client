@@ -1,1 +1,56 @@
-<p>compare works!</p>
+<div class="compare">
+  <ul class="compare__allCandidates">
+    <li
+      *ngFor="let candidate of allCandidates"
+      (click)="selectCandidate(candidate.id)"
+      [ngClass]="getCandidateClasses(candidate)"
+      class="compare__candidate">
+      {{ candidate.name }}
+    </li>
+  </ul>
+
+  <ul class="compare__selectedCandidates">
+    <li
+      *ngFor="let candidate of selectedCandidates;"
+      (click)="unselectCandidate(candidate.id)"
+      class="compare__selectedCandidate">
+      <div class="compare__selectedCandidate__name">
+        {{ candidate.name }}
+      </div>
+      <div
+        (click)="unselectCandidate(i)"
+        class="compare__selectedCandidate__delete">
+        <!-- TODO find svg for this -->
+        X
+      </div>
+      <div
+        [ngStyle]="{
+          background: 'url(' + candidate.imgSrc + ')',
+          backgroundColor: 'black',
+          backgroundPosition: 'center',
+          backgroundRepeat: 'no-repeat',
+          backgroundSize: 'auto 100%'
+        }"
+        class="compare__selectedCandidate__img">
+      </div>
+    </li>
+  </ul>
+
+  <div
+    [ngSwitch]="selectedCandidates.length"
+    class="compare__chart">
+    <ng-container *ngFor="let n of possibleListLengths">
+      <canvas mdbChart
+        *ngSwitchCase="n"
+        chartType="line"
+        [datasets]="datasets"
+        [labels]="chartLabels"
+        [colors]="chartColors"
+        [legend]="true"
+        [options]="{ responsive: true }"
+        (chartHover)="chartHovered($event)"
+        (chartClick)="chartClicked($event)">
+      </canvas>
+    </ng-container>
+  </div>
+</div>
