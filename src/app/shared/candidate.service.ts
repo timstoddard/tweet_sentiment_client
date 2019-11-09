@@ -1,27 +1,27 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { of, Observable } from 'rxjs'; // TODO remove
-import candidates from './candidates';
+import { Observable } from 'rxjs';
 
 export interface CandidateResponse {
   id: string;
   data: number[];
 }
 
-const baseUrl = 'http://localhost:5000';
-
 @Injectable({ providedIn: 'root' })
 export class CandidateService {
+  private baseUrl = 'http://localhost:5000';
+
   constructor(private http: HttpClient) {}
 
   getCandidate(id: string): Observable<CandidateResponse> {
-    // TODO add /candidate to api route
-    return this.http.get<CandidateResponse>(`${baseUrl}/${id}`);
+    return this.http.get<CandidateResponse>(this.formatUrl(`candidate/${id}`));
   }
 
   getCandidates(): Observable<CandidateResponse[]> {
-    // TODO add /all endpoint to api
-    // return this.http.get<CandidateResponse[]>(`${baseUrl}/all`);
-    return of(candidates);
+    return this.http.get<CandidateResponse[]>(this.formatUrl('all'));
+  }
+
+  private formatUrl(path: string) {
+    return `${this.baseUrl}/${path}`;
   }
 }
