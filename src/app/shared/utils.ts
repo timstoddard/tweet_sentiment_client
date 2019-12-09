@@ -1,5 +1,7 @@
 import { ActivatedRoute, Router, ParamMap } from '@angular/router';
 
+const DEFAULT_TIME_PERIOD_MS = 1000 * 60 * 60 * 24 * 10; // 10 days
+
 export const updateChartLabels = (times: number[]) => {
   const formatDate = (time: number) => {
     const date = new Date(time);
@@ -25,7 +27,7 @@ export const initQueryParams = (activatedRoute: ActivatedRoute, router: Router, 
   const startDate = activatedRoute.snapshot.queryParamMap.get('start');
   const endDate = activatedRoute.snapshot.queryParamMap.get('end');
   if (!startDate || !endDate) {
-    const start = new Date(Date.now() - 1000 * 60 * 60 * 24 * 10).valueOf();
+    const start = new Date(Date.now() - DEFAULT_TIME_PERIOD_MS).valueOf();
     const end = Date.now();
     router.navigate([], {
       relativeTo: activatedRoute,
@@ -41,7 +43,7 @@ export const getStartAndEndDates = (params: ParamMap) => {
   let startDate = parseInt(params.get('start'), 10);
   let endDate = parseInt(params.get('end'), 10);
   if (!startDate || !endDate) {
-    startDate = Date.now() - 1000 * 60 * 60 * 24;
+    startDate = Date.now() - DEFAULT_TIME_PERIOD_MS;
     endDate = Date.now();
   }
   return [startDate, endDate];
