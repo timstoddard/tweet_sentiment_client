@@ -1,4 +1,23 @@
+@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+
 body {
   margin: 0;
   padding: 0;
+}
+
+// "loading" style that fades the background in and out
+.loading-background {
+  // animation: fadeBackground 2s infinite;
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+@keyframes fadeBackground {
+  0%, 100% {
+    background: rgba(0,255,0,0.1);
+  }
+
+  50% {
+    background: rgba(0,255,0,0.9);
+  }
 }

@@ -4,6 +4,7 @@ import candidates, { Candidate } from './candidates';
 import { Observable } from 'rxjs';
 import { CandidateService } from './candidate.service';
 import { map } from 'rxjs/operators';
+import { getStartAndEndDates } from './utils';
 
 @Injectable({ providedIn: 'root' })
 export class CandidateResolver implements Resolve<Candidate> {
@@ -11,7 +12,8 @@ export class CandidateResolver implements Resolve<Candidate> {
 
   resolve(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): Observable<Candidate> {
     const id = route.paramMap.get('candidate');
-    return this.candidateService.getCandidate(id)
+    const [startDate, endDate] = getStartAndEndDates(route.queryParamMap);
+    return this.candidateService.getCandidate(id, startDate, endDate)
       .pipe(map(c => {
         const info = candidates.find(
           (candidate: Candidate) => candidate.id === id);

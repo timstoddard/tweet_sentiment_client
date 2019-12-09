@@ -9,12 +9,14 @@ const routes: Routes = [
   {
     path: 'compare',
     component: CompareComponent,
-    resolve: { candidates: CandidatesResolver }
+    resolve: { candidates: CandidatesResolver },
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange'
   },
   {
     path: ':candidate',
     component: CandidateComponent,
-    resolve: { candidate: CandidateResolver }
+    resolve: { candidate: CandidateResolver },
+    runGuardsAndResolvers: 'paramsOrQueryParamsChange'
   }
 ];
 

@@ -3,7 +3,7 @@ export interface Candidate {
   name: string;
   imgSrc: string;
   birthday: Date;
-  data: number[];
+  data: Array<{ sentiment: number, time: number }>;
 }
 
 const candidates: Candidate[] = [

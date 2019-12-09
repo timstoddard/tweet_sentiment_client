@@ -1,9 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Candidate } from '../shared/candidates';
 import { CompareColorsService } from './shared/compare-colors.service';
+import { updateChartLabels, initQueryParams } from '../shared/utils';
 
 const CANDIDATE_LIMIT = 5;
 
@@ -21,38 +22,48 @@ export class CompareComponent implements OnInit {
   allCandidates: Candidate[] = [];
   allChartColors = [];
   selectedCandidateIds: Set<string> = new Set();
-  selectedCandidates: Candidate[] = [];
+  selectedCandidates = 0;
   datasets: Dataset[] = [];
   chartColors = [];
   possibleListLengths = [];
-  chartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  chartLabels = Array(12).fill('');
+  loading = false;
 
   private ngUnsubscribe: Subject<void> = new Subject();
 
   constructor(
     private activatedRoute: ActivatedRoute,
-    private compareColorsService: CompareColorsService) {}
+    private router: Router,
+    private compareColorsService: CompareColorsService,
+    private changeDetectorRef: ChangeDetectorRef) {}
 
   ngOnInit() {
     this.activatedRoute.data
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(data => {
+        this.loading = false;
         this.allCandidates = data.candidates;
-        console.log(this.allCandidates)
+        this.chartLabels = updateChartLabels(this.allCandidates[0].data.map(entry => entry.time));
       });
     this.possibleListLengths = this.getAllLengths();
     this.allChartColors = this.compareColorsService.getColors();
+
+    initQueryParams(this.activatedRoute, this.router,
+      () => this.loading = true);
   }
 
   selectCandidate(id: string) {
     if (this.canSelectCandidate(id)) {
       this.selectedCandidateIds.add(id);
+      this.selectedCandidates++;
       this.updateChartData();
     }
   }
 
-  unselectCandidate(id: string) {
+  unselectCandidate(event: Event, id: string) {
+    event.stopPropagation();
     this.selectedCandidateIds.delete(id);
+    this.selectedCandidates--;
     this.updateChartData();
   }
 
@@ -61,11 +72,14 @@ export class CompareComponent implements OnInit {
   }
 
   chartHovered(e: any): void {
-    console.log(e);
+  }
+
+  isSelected(candidate: Candidate) {
+    return this.selectedCandidateIds.has(candidate.id);
   }
 
   getCandidateClasses(candidate: Candidate) {
-    const alreadySelected = this.selectedCandidateIds.has(candidate.id);
+    const alreadySelected = this.isSelected(candidate);
     const maxLimitReached = this.selectedCandidateIds.size >= CANDIDATE_LIMIT;
     return {
       'compare__candidate--selectDisabled': alreadySelected || maxLimitReached
@@ -73,15 +87,16 @@ export class CompareComponent implements OnInit {
   }
 
   private updateChartData() {
-    this.selectedCandidates = this.allCandidates.filter(
+    const selectedCandidates = this.allCandidates.filter(
       (candidate: Candidate) => this.selectedCandidateIds.has(candidate.id));
-    this.datasets = this.selectedCandidates.map(
+    this.datasets = selectedCandidates.map(
       ({ data, name }: Candidate) => ({
-        data,
+        data: data.map(entry => entry.sentiment),
         label: name,
       }));
     this.chartColors = this.allChartColors
-      .slice(0, this.selectedCandidates.length);
+      .slice(0, selectedCandidates.length);
+    this.changeDetectorRef.markForCheck();
   }
 
   private canSelectCandidate(id: string) {

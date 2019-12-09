@@ -1,8 +1,9 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
 import { Candidate } from '../shared/candidates';
+import { updateChartLabels, initQueryParams } from '../shared/utils';
 
 @Component({
   selector: 'app-candidate',
@@ -10,7 +11,6 @@ import { Candidate } from '../shared/candidates';
   styleUrls: ['./candidate.component.scss']
 })
 export class CandidateComponent implements OnInit {
-  @Output() candidateSelected = new EventEmitter();
   candidate: Candidate;
   chartColors = [
     {
@@ -19,25 +19,31 @@ export class CandidateComponent implements OnInit {
       borderWidth: 2,
     },
   ];
-  chartLabels = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+  chartLabels = Array(12).fill('');
+  loading = false;
 
   private ngUnsubscribe: Subject<void> = new Subject();
 
-  constructor(private activatedRoute: ActivatedRoute) {}
+  constructor(private activatedRoute: ActivatedRoute,
+              private router: Router) {}
 
   ngOnInit() {
     this.activatedRoute.data
       .pipe(takeUntil(this.ngUnsubscribe))
       .subscribe(data => {
+        this.loading = false;
         console.log(data.candidate)
         this.candidate = data.candidate;
-        this.candidateSelected.emit(this.candidate);
+        this.chartLabels = updateChartLabels(this.candidate.data.map(entry => entry.time));
       });
+
+    initQueryParams(this.activatedRoute, this.router,
+      () => this.loading = true);
   }
 
   getDataset(candidate: Candidate) {
     return [{
-      data: candidate.data,
+      data: candidate.data.map(entry => entry.sentiment),
       label: candidate.name,
     }];
   }
@@ -54,6 +60,5 @@ export class CandidateComponent implements OnInit {
   }
 
   chartHovered(e: any): void {
-    console.log(e);
   }
 }

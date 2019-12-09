@@ -1,6 +1,6 @@
 .candidate {
   display: grid;
-  grid-template-columns: 200px auto;
+  grid-template-columns: 30% 70%;
   grid-template-rows: auto;
 
   &__info,
@@ -8,15 +8,30 @@
     display: inline-block;
   }
 
-  &__img {
-    border-radius: 6px;
-    height: 200px;
-    width: auto;
+  &__name,
+  &__age {
+    text-align: center;
+  }
+
+  &__info {
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    grid-area: 1 / 1 / 2 / 2;
+    justify-content: flex-start;
   }
 
   &__chart {
-    min-width: 500px;
-    max-width: 800px;
-    margin: 0 auto;
+    grid-area: 1 / 2 / 2 / 3;
+    margin: 0 auto 0 0;
+    max-width: 60vw;
+    min-width: 60vw;
+  }
+
+  &__img {
+    border-radius: 6px;
+    max-height: 400px;
+    max-width: 250px;
+    width: auto;
   }
 }

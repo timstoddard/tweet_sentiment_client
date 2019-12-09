@@ -5,6 +5,7 @@
       class="header__linkWrapper">
       <a
         [routerLink]="candidate.id"
+        queryParamsHandling="preserve"
         routerLinkActive="header__link--active"
         class="header__link">
         {{ candidate.name }}
@@ -13,6 +14,7 @@
     <li class="header__linkWrapper">
       <a
         routerLink="compare"
+        queryParamsHandling="preserve"
         routerLinkActive="header__link--active"
         class="header__link">
         Compare
